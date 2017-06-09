@@ -3,6 +3,9 @@ from abc import abstractmethod
 import random
 
 class Lot(metaclass=ABCMeta):
+    '''
+    parking lot class
+    '''
 
     def __init__(self):
         self.car = None
@@ -13,13 +16,22 @@ class Lot(metaclass=ABCMeta):
         pass
 
     def getLotId(self):
+        '''
+        Lot id, for debug purpose
+        '''
         return self.id
 
     def park(self, car):
+        '''
+        park a car in the lot
+        '''
         assert(self.car == None)
         self.car = car
 
     def retrive(self):
+        '''
+        fetch a car in the log
+        '''
         assert(self.car != None)
         result = self.car
         self.car = None

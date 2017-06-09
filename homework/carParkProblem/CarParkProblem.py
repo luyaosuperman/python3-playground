@@ -5,6 +5,10 @@ from lot import *
 
 
 class CarparkManager():
+    '''
+    This class will allocate carpark
+    All park/fetch should be called by this class
+    '''
 
     def __init__(self, numberOfSmall, numberOfLarge):
         #init the carpark list
@@ -19,6 +23,9 @@ class CarparkManager():
         self.largeOccupied = 0
 
     def park(self, car):
+        '''
+        park a car
+        '''
         print("--------")
         assert(car.lot == None)
         
@@ -42,6 +49,9 @@ class CarparkManager():
 
 
     def retriveLot(self, car):
+        '''
+        when park() is called, this function will find a lot for the car
+        '''
         park = None
         if car.getCarSize() == 1 :
             #park a small car
@@ -68,6 +78,9 @@ class CarparkManager():
         return park
 
     def fetch(self, car):
+        '''
+        take out a car from the carpark
+        '''
         print("========")
         assert(car.lot != None)
         assert(car.lot.car == car)
@@ -86,9 +99,19 @@ class CarparkManager():
 
 
     def pushDown(self):
+        '''
+        when a car is retrived, 
+        this function will optimize the carpark allocation by 
+        moving around the existing cars.
+
+        Not implmented
+        '''
         pass
 
     def trace(self):
+        '''
+        print the carpark information for debug purpose
+        '''
         print("small cars parked:", self.smallOccupied, "out of", self.numberOfSmall)
         for park in self.smallLotList:
             print(park.getLotId(), "->", park.car.getCarId(), end = ", ")
