@@ -1,16 +1,13 @@
-import unittest
-import random
-
 class User():
     '''
     User information class
     Node in the relationship graph
     it stores the relationship/edge of the graph
     '''
+
     def __init__(self, username):
         self.username = username
         self.relationshipList = []
-
 
     def addRelationship(self, relationship):
         '''
@@ -20,23 +17,23 @@ class User():
         self.relationshipList.append(relationship)
 
     def getFriends(self):
-        return [relationship 
-                for relationship in self.relationshipList 
+        return [relationship
+                for relationship in self.relationshipList
                 if relationship.isFriend(self)]
 
     def getPartners(self):
-        return [relationship 
-                for relationship in self.relationshipList 
+        return [relationship
+                for relationship in self.relationshipList
                 if relationship.isPartner(self)]
 
     def getParents(self):
-        return [relationship 
-                for relationship in self.relationshipList 
+        return [relationship
+                for relationship in self.relationshipList
                 if relationship.isParent(self)]
 
     def getChilds(self):
-        return [relationship 
-                for relationship in self.relationshipList 
+        return [relationship
+                for relationship in self.relationshipList
                 if relationship.isChild(self)]
 
     def getPeers(self):
@@ -55,11 +52,11 @@ class Relationship():
     and  user2 --child---> user1
     '''
 
-    FRIEND  = 1
+    FRIEND = 1
     PARTNER = 2
-    PARENT  = 4
-    CHILD   = 8
-    #can only be one
+    PARENT = 4
+    CHILD = 8
+    # can only be one
 
     def __init__(self, user1, user2, relationshipType):
         '''
@@ -72,12 +69,11 @@ class Relationship():
         self.relationshipType = relationshipType
         self._anotherRelationship()
 
-
     def _anotherRelationship(self):
         '''
         build the relationship of the other direction
         '''
-        if (self.relationshipType == Relationship.FRIEND or 
+        if (self.relationshipType == Relationship.FRIEND or
                 self.relationshipType == Relationship.PARTNER):
             self.anotherRelationshipType = self.relationshipType
 
@@ -98,15 +94,20 @@ class Relationship():
         elif user == self.user2:
             return self.user1
         else:
-            raise RuntimeError("The user queried does not exist in this relationship")
+            raise RuntimeError(
+                "The user queried does not exist in this relationship")
 
     def _getRelationship(self, user):
+        """
+        Return the relationship from this user to the peer
+        """
         if user == self.user1:
             return self.relationshipType
         elif user == self.user2:
             return self.anotherRelationshipType
         else:
-            raise RuntimeError("The user queried does not exist in this relationship")
+            raise RuntimeError(
+                "The user queried does not exist in this relationship")
 
     def isFriend(self, user):
         return self._getRelationship(user) == Relationship.FRIEND
@@ -120,12 +121,14 @@ class Relationship():
     def isChild(self, user):
         return self._getRelationship(user) == Relationship.CHILD
 
+
 class RelationshipManager():
     '''
     relationships and users are managed here.
     create user here,
     find relationship here as well.
     '''
+
     def __init__(self):
         self.userList = []
 
@@ -163,9 +166,9 @@ class RelationshipManager():
         result = False
         visited = []
         stack = []
-        stack.append(user1)# stack top is at the end of the list
+        stack.append(user1)  # stack top is at the end of the list
         while len(stack) > 0:
-            user = stack.pop() #remove and return the last item
+            user = stack.pop()  # remove and return the last item
 
             if user == user2:
                 result = True
@@ -191,10 +194,10 @@ class RelationshipManager():
         visited = []
         queue = []
 
-        queue.insert(0, [user, 0]) # insert at index 0, user and current tier
+        queue.insert(0, [user, 0])  # insert at index 0, user and current tier
 
         while len(queue) > 0:
-            [user,tier] = queue.pop() #remove and return the last item
+            [user, tier] = queue.pop()  # remove and return the last item
             if user not in visited:
                 visited.append(user)
             else:
@@ -210,7 +213,6 @@ class RelationshipManager():
                     queue.insert(0, [nextUser, tier + 1])
         return resultDict
 
-
     def getParents(self, user):
         pass
 
@@ -222,64 +224,3 @@ class RelationshipManager():
 
     def getFamily(self, user):
         pass
-
-
-
-class Test(unittest.TestCase):
-
-    def prepareUsers_1(self):
-        '''
-        Pop the test data
-        '''
-        self.userList = []
-        self.relationshipManager = RelationshipManager()
-        for i in range(10):
-            user = self.relationshipManager.createUser(str(i))
-            self.userList.append(user)
-
-        relationships = [
-                            [0,1,Relationship.FRIEND],
-                            [1,2,Relationship.FRIEND],
-                            [0,2,Relationship.FRIEND],
-                            [2,3,Relationship.FRIEND]
-                        ]
-
-        for relationship in relationships:
-            self.relationshipManager.buildRelationship(
-                self.userList[relationship[0]],self.userList[relationship[1]], Relationship.FRIEND)    
-
-
-    def test_1(self):
-        self.prepareUsers_1()
-        self.assertEqual(
-            self.relationshipManager.hasRelationship(self.userList[0], self.userList[2]), 
-            True)
-
-        
-    def test_2(self):
-        self.prepareUsers_1()
-        self.assertEqual(
-            self.relationshipManager.hasRelationship(self.userList[0], self.userList[9]), 
-            False)
-
-    def test_3(self):
-        self.prepareUsers_1()
-        #print(self.relationshipManager.getFriends(self.userList[0]))
-        resultDict = self.relationshipManager.getFriends(self.userList[0])
-        #print(resultDict)
-        for tier in resultDict:
-            print("\ntier " + str(tier))#,end=" : ")
-            for user in resultDict[tier]:
-                print(user.username)#,end=" ")
-
-
-
-if __name__ == '__main__':
-    random.seed(1)
-    unittest.main()
-
-
-
-
-
-

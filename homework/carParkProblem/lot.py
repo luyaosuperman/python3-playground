@@ -3,9 +3,12 @@ from abc import abstractmethod
 import random
 
 class Lot(metaclass=ABCMeta):
-    '''
+    """
     parking lot class
-    '''
+    """
+
+    SMALL = 1
+    LARGE = 2
 
     def __init__(self):
         self.car = None
@@ -16,40 +19,48 @@ class Lot(metaclass=ABCMeta):
         pass
 
     def getLotId(self):
-        '''
+        """
         Lot id, for debug purpose
-        '''
+        """
         return self.id
 
     def park(self, car):
-        '''
+        """
         park a car in the lot
-        '''
+        """
         assert(self.car == None)
         self.car = car
 
-    def retrive(self):
-        '''
+    def retrieve(self):
+        """
         fetch a car in the log
-        '''
+        """
         assert(self.car != None)
         result = self.car
         self.car = None
         return result
 
-class LargeLot(Lot):
+class SmallLot(Lot):
+    """
+    Implementation of small lot
+    """
     def __init__(self):
         super().__init__()
 
     def getLotSize(self):
-        return 1
+        return Lot.SMALL
 
 #class MediumLot(Lot):
     #pass
 
-class SmallLot(Lot):
+class LargeLot(Lot):
+    """
+    Implementation of large lot
+    """
     def __init__(self):
         super().__init__()
 
     def getLotSize(self):
-        return 2
+        return Lot.LARGE
+
+

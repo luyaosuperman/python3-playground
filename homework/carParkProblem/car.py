@@ -2,10 +2,14 @@ from abc import ABCMeta
 from abc import abstractmethod
 import random
 
+
 class Car(metaclass=ABCMeta):
     '''
-    car class
+    abstract car class
     '''
+    SMALL = 1
+    LARGE = 2
+
     def __init__(self):
         self.lot = None
         self.id = random.randrange(100)
@@ -15,7 +19,7 @@ class Car(metaclass=ABCMeta):
         '''
         what kind of car it is.
         '''
-        pass
+        raise RuntimeError("Not implemented")
 
     def getCarId(self):
         '''
@@ -31,7 +35,7 @@ class Car(metaclass=ABCMeta):
         assert(self.lot == None)
         self.lot = lot
 
-    def retrive(self):
+    def retrieve(self):
         '''
         remove carpark information from the car
         once it is taken out
@@ -41,19 +45,27 @@ class Car(metaclass=ABCMeta):
         self.lot = None
         return result
 
+
 class SmallCar(Car):
+    """
+    implementation of a small car
+    """
     def __init__(self):
         super().__init__()
 
     def getCarSize(self):
-        return 1
+        return Car.SMALL
 
 #class MediumCar(Car):
 #   pass
 
+
 class LargeCar(Car):
+    """
+    implementation of a large car
+    """
     def __init__(self):
         super().__init__()
 
     def getCarSize(self):
-        return 2
+        return Car.LARGE
