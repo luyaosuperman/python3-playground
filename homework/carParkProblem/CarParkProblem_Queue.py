@@ -1,5 +1,7 @@
 import unittest
 import random
+import threading
+import time
 from car import *
 from lot import *
 
@@ -100,7 +102,7 @@ class CarparkManager():
         print()
 
 
-class CarManager():
+#class CarManager():
     #manage a pool of cars
     #manage creating multiple park and fetch request
 
@@ -109,8 +111,14 @@ class CarManager():
 class Test(unittest.TestCase):
 
 
+    def parkACar(self, car):
+        self.carparkManager.park(car)
+
+    def fetchACar(self, car):
+        self.carparkManager.fetch(car)
+
     def test_1(self):
-        carparkManager = CarparkManager(10,10)
+        self.carparkManager = CarparkManager(10,10)
         smallCars = []
         largeCars = []
         for i in range(10):
@@ -119,18 +127,25 @@ class Test(unittest.TestCase):
 
 
         for i in range(10):
-            print("\nparking small", smallCars[i].getCarId())
-            carparkManager.park(smallCars[i])
+            #print("\nparking small", smallCars[i].getCarId())
+            #self.carparkManager.park(smallCars[i])
 
-            print("\nparking large", largeCars[i].getCarId())
-            carparkManager.park(largeCars[i])
+            #print("\nparking large", largeCars[i].getCarId())
+            #self.carparkManager.park(largeCars[i])
+            threading.Thread(target = self.parkACar, args = (smallCars[i],)).start()
+            threading.Thread(target = self.parkACar, args = (largeCars[i],)).start()
+
+
+        time.sleep(1)
 
         for i in range(10):
-            print("\nfetching small", smallCars[i].getCarId())
-            carparkManager.fetch(smallCars[i])
+            #print("\nfetching small", smallCars[i].getCarId())
+            #self.carparkManager.fetch(smallCars[i])
 
-            print("\nfetching small", smallCars[i].getCarId())
-            carparkManager.fetch(largeCars[i])
+            #print("\nfetching small", smallCars[i].getCarId())
+            #self.carparkManager.fetch(largeCars[i])
+            threading.Thread(target = self.fetchACar, args = (smallCars[i],)).start()
+            threading.Thread(target = self.fetchACar, args = (largeCars[i],)).start()
 
 
 

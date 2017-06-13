@@ -211,6 +211,19 @@ class RelationshipManager():
         return resultDict
 
 
+    def getParents(self, user):
+        pass
+
+    def getPartners(self, user):
+        pass
+
+    def getChilds(self, user):
+        pass
+
+    def getFamily(self, user):
+        pass
+
+
 
 class Test(unittest.TestCase):
 
