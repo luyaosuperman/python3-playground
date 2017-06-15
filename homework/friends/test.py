@@ -34,6 +34,7 @@ class TestFriendship(unittest.TestCase):
             self.relationshipManager.hasRelationship(
                 self.userList[0], self.userList[2]),
             True)
+        assertTrue
 
     def testHasRelationship_2(self):
         """
@@ -65,6 +66,8 @@ class TestFriendship(unittest.TestCase):
             print("\ntier " + str(tier))  # ,end=" : ")
             for user in resultDict[tier]:
                 print(user.username)  # ,end=" ")
+
+        None exist user
 
 
 if __name__ == '__main__':

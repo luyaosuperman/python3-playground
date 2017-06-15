@@ -40,6 +40,12 @@ class Lot(metaclass=ABCMeta):
         self.car = None
         return result
 
+    def getCar(self):
+        """
+        return the car class, for relocate purpose
+        """
+        return self.car
+
 class SmallLot(Lot):
     """
     Implementation of small lot

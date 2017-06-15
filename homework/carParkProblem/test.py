@@ -50,6 +50,45 @@ class Test(unittest.TestCase):
         self.assertEqual(len(carparkManager.smallLotList), 0)
         self.assertEqual(len(carparkManager.largeLotList), 0)
 
+    def testPushDown(self):
+        carparkManager = CarparkManager(10, 10)
+        smallCars = []
+        largeCars = []
+        for i in range(20):
+            smallCars.append(SmallCar())
+
+        # Park first 10 small cars, they should end up in small carpark
+        for i in range(10):
+            carparkManager.park(smallCars[i])
+
+        for i in range(10):
+            self.assertNotEqual(smallCars[i].lot, None)
+
+        for i in range(10, 20):
+            self.assertEqual(smallCars[i].lot, None)
+
+        self.assertEqual(carparkManager.smallOccupied, 10)
+        self.assertEqual(carparkManager.largeOccupied, 0)
+
+
+        # Park next 10 small cars, they should end up in large carpark
+        for i in range(10, 20):
+            carparkManager.park(smallCars[i])
+
+        for i in range(10, 20):
+            self.assertNotEqual(smallCars[i].lot, None)
+
+        self.assertEqual(carparkManager.smallOccupied, 10)
+        self.assertEqual(carparkManager.largeOccupied, 10)
+
+        # fetch cars from small carpark first, 
+        # then cars stay in large carpark should moves to small carpark
+        for i in range(10):
+            carparkManager.fetch(smallCars[i])
+
+        self.assertEqual(carparkManager.smallOccupied, 10)
+        self.assertEqual(carparkManager.largeOccupied, 0)
+
 
 if __name__ == '__main__':
     unittest.main()

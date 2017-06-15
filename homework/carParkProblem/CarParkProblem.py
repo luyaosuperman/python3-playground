@@ -24,7 +24,7 @@ class CarparkManager():
         """
         park a car
         """
-        #print("--------")
+        # print("--------")
         assert(car.lot == None)
 
         park = self.retrieveLot(car)
@@ -43,7 +43,7 @@ class CarparkManager():
         else:
             raise RuntimeError("Carpark full!!!")
 
-        #self.trace()
+        # self.trace()
 
     def retrieveLot(self, car):
         """
@@ -78,7 +78,7 @@ class CarparkManager():
 
     def fetch(self, car):
         """take out a car from the carpark"""
-        #print("========")
+        # print("========")
         assert(car.lot != None)
         assert(car.lot.car == car)
         park = car.retrieve()
@@ -92,7 +92,8 @@ class CarparkManager():
             self.largeOccupied -= 1
             assert(self.largeOccupied >= 0)
 
-        #self.trace()
+        self.pushDown()
+        # self.trace()
 
     def pushDown(self):
         """
@@ -102,7 +103,22 @@ class CarparkManager():
 
         Not implmented
         """
-        raise RuntimeError("Not Implemented")
+        #raise RuntimeError("Not Implemented")
+        if self.smallOccupied < self.numberOfSmall:
+            # There are free lots in small carpark area
+            # find small cars which is sitting among the large cars,
+            # and then relocate them
+            for lot in self.largeLotList:
+                if lot.getCar() != None:
+                    assert(lot.car != None)
+                    car = lot.getCar()
+                    if car.getCarSize() == Car.SMALL:
+                        car.retrieve()
+                        lot.retrieve()
+                        self.park(car)
+
+                    if self.smallOccupied >= self.numberOfSmall:
+                        return
 
     def trace(self):
         """
@@ -119,5 +135,3 @@ class CarparkManager():
         for park in self.largeLotList:
             print(park.getLotId(), "->", park.car.getCarId(), end=", ")
         print()
-
-
