@@ -12,7 +12,7 @@ class Card():
         "SPADES",
     }
 
-    __usedCombination = set()
+    # __usedCombination = set()
     # It should contain the set of cards which is already shuffled,
     # in form of tuple: {(Cards.CLUBS, 1), (Cards.SPADES, 2)}
 
@@ -34,12 +34,12 @@ class Card():
         assert(self.rank >= 1 and self.rank <= 13)
         #If, else, raise
 
-        suitRank = (self.suit, self.rank)
+        """suitRank = (self.suit, self.rank)
         if suitRank in Card.__usedCombination:
             raise RuntimeError(
                 "duplicate cards %s %s" % (self.suit, self.rank))
         else:
-            Card.__usedCombination.add(suitRank)
+            Card.__usedCombination.add(suitRank)"""
 
     def getSuit(self):
         """
