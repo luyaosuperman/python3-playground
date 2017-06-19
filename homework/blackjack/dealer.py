@@ -7,30 +7,19 @@ class Dealer():
     (4) Deal cards
     """
 
-    def __init__(self, numberOfPlayers, numberOfDecks):
+    def __init__(self, numberOfDecks):
         """
         initate the Dealer
         """
-        assert(
-            numberOfPlayers > 0
-            and numberOfPlayers < 52
-            #and 52 % numberOfPlayers == 0
-        )
-        self.players = []
-        self.numberOfPlayers = numberOfPlayers
         self.numberOfDecks = numberOfDecks
 
         self.cards = []
+        self.usedCards = []
 
-        self.__createUsers()
+        self.cardsInGame = []  # cards used in game
+
         self.__createCards()
-
-    def __createUsers(self):
-        """
-        Create users
-        """
-        for i in range(self.numberOfPlayers):
-            self.players.append(Player("Player_" + str(i)))
+        self.__shuffleCards()
 
     def __createCards(self):
         """
@@ -42,7 +31,7 @@ class Dealer():
                 for rank in range(1, 13 + 1):
                     self.cards.append(Card(suit, rank))
 
-    def shuffleCards(self):
+    def __shuffleCards(self):
         """
         Shuffle cards
         Fisher–Yates shuffle
@@ -52,45 +41,58 @@ class Dealer():
             j = random.randint(i, len(self.cards) - 1)
             self.cards[i], self.cards[j] = self.cards[j], self.cards[i]
 
-    """def __validateCardsIntegrity(self, cards=None):
-        ""
-        Validates that all 52 cards are still there, especially after shuffle
-        ""
-        cardDict = {
-            "CLUBS": set(),
-            "DIAMONDS": set(),
-            "HEARTS": set(),
-            "SPADES": set(),
-        }
-        if cards == None:
-            cards = self.cards
+    def dealACard(self):
+        """
+        Deal a car to a user
+        """
+        return self.cards.pop()
+
+    def SetAsideACard(self):
+        """
+        Set aside a card for dealer itself
+        """
+        self.cardsInGame.append(self.cards.pop())
+
+    def act(self):
+        """
+        Necessary dealer action in a round
+        seems to be None?
+        """
+        pass
+
+    def finalAction(self):
+        """
+        After every player finishe their move,
+        dealer need to do something.
+        """
+        while self.getValue() < 17:
+            self.SetAsideACard()
+
+    def getValue(self):
+        """
+        return the value of the cards in dealer's hand
+        """
+
+        cards = self.cardsInGame
+        aceCount = 0
+        result = 0
         for card in cards:
-            cardDict[card.getSuit()].add(card.getRank())
+            rank = card.getRank()
+            if rank == 1:
+                aceCount += 2
+            elif rank <= 10:
+                result += rank
+            elif rank <= 13:
+                result += 10
+            else:
+                raise ValueError(
+                    "Illegal rank for a card : %s" % rank
+                )
 
-        for suit in cardDict:
-            assert(len(cardDict[suit]) == 13)"""
+        result += aceCount  # ace will be count as at least 1
 
-    """def dealCards(self):
-        ""
-        Deal cards to players
-        ""
-        for i in range(len(self.cards)):
-            self.players[i % len(self.players)].addCard(self.cards[i])
-
-        # Last card should go to last player
-        assert(
-            i % (len(self.players)) == len(self.players) - 1
-        )"""
-
-    """def __validateDeal(self):
-        cards = []
-        for player in self.players:
-            cards += self.players.getCards()
-        self.__validateCardsIntegrity(cards=cards)"""
-
-if __name__ == "__main__":
-    dealer = Dealer(4)
-    dealer.shuffleCards()
-    dealer.dealCards()
-    for card in dealer.cards:
-        print(card.getName())
+        # One by one,
+        # check if it is good to make ace 10 instaed of 1
+        while result + 9 <= 21 and aceCount > 0:
+            result += 9
+            aceCount -= 1

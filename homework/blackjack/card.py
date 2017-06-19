@@ -1,5 +1,6 @@
 import random
 
+
 class Card():
     """
     Base class of cards
@@ -32,7 +33,7 @@ class Card():
         """
         assert(self.suit in Card.suits)
         assert(self.rank >= 1 and self.rank <= 13)
-        #If, else, raise
+        # If, else, raise
 
         """suitRank = (self.suit, self.rank)
         if suitRank in Card.__usedCombination:
