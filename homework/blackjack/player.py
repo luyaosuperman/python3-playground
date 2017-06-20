@@ -1,3 +1,6 @@
+from xprint import xPrint, printStack
+from card import Card
+
 class Player():
     """
     Player class who holds the cards after the deal
@@ -30,19 +33,24 @@ class Player():
             "STAND": self.__stand,
         }
 
-    def addCard(self, card):
+    @printStack
+    def addACard(self):
         """
         Add a card to the possession of the user
         """
-        self.cards.append(self.funcGetACard())
+        cards = self.__getCards()
+        cards.append(self.funcGetACard())
         self.__checkPlayerFinished()
+        self.__showCards()
 
+    @printStack
     def getCards(self):
         """
         Return the cards owned by the player
         """
         return self.cards
 
+    @printStack
     def act(self):
         """
         Set the next action, probablly through console
@@ -53,10 +61,12 @@ class Player():
                 not in self.__getAllowedAction():
             try:
                 inputCommand = input("%s : " % self.playerName)
-            except Exception, e:
+            except Exception as e:
                 print(str(e))
         func = self.actionMap[inputCommand.upper()]
+        func()
 
+    @printStack
     def __getAllowedAction(self):
         """
         After implementing chips, it is necessary to
@@ -69,22 +79,27 @@ class Player():
             "STAND",
         }
 
-    def __hit(self, funcGetACard):
+    @printStack
+    def __hit(self):
         """
         Implement the action "hit"
         """
+        xPrint("player %s HIT!" % self.playerName)
         cards = self.__getCards()
-        card = funcGetACard()
+        card = self.funcGetACard()
         cards.append(card)
         self.__checkPlayerFinished()
 
+    @printStack
     def __stand(self):
         """
         Implement the action "stand"
         """
+        xPrint("player %s STAND!" % self.playerName)
         self.stand = 1
         self.playerFinished = True
 
+    @printStack
     def __getCards(self):
         """
         return the correct stack before/after split
@@ -95,19 +110,23 @@ class Player():
             cards = self.cards2
         return cards
 
+    @printStack
     def __checkPlayerFinished(self):
         """
         Check if the player can continue on
         """
         if self.getValue() >= 21:
+            xPrint("player %s busted!" % self.playerName)
             self.playerFinished = True
 
+    @printStack
     def isPlayerFinished(self):
         """
         Return if the player is stand
         """
         return self.isPlayerFinished
 
+    @printStack
     def getValue(self):
         """
         get the value of cards in player's hand
@@ -136,3 +155,18 @@ class Player():
         while result + 9 <= 21 and aceCount > 0:
             result += 9
             aceCount -= 1
+
+        self.__showCards()
+
+        return result
+
+    def __showCards(self):
+        """
+        print out all cards
+        """
+        cards = self.__getCards()
+        for card in cards:
+            xPrint(
+                "cards in player %s:" % self.playerName,
+                card.getName()
+            )

@@ -1,3 +1,8 @@
+from card import Card
+from xprint import xPrint, printStack
+import random
+
+
 class Dealer():
     """
     Manager class, responsible for
@@ -21,6 +26,7 @@ class Dealer():
         self.__createCards()
         self.__shuffleCards()
 
+    @printStack
     def __createCards(self):
         """
         Create a deck of cards
@@ -31,6 +37,7 @@ class Dealer():
                 for rank in range(1, 13 + 1):
                     self.cards.append(Card(suit, rank))
 
+    @printStack
     def __shuffleCards(self):
         """
         Shuffle cards
@@ -41,18 +48,23 @@ class Dealer():
             j = random.randint(i, len(self.cards) - 1)
             self.cards[i], self.cards[j] = self.cards[j], self.cards[i]
 
+    @printStack
     def dealACard(self):
         """
         Deal a car to a user
         """
         return self.cards.pop()
 
+    @printStack
     def SetAsideACard(self):
         """
         Set aside a card for dealer itself
         """
         self.cardsInGame.append(self.cards.pop())
+        self.__showCards()
+        
 
+    @printStack
     def act(self):
         """
         Necessary dealer action in a round
@@ -60,6 +72,7 @@ class Dealer():
         """
         pass
 
+    @printStack
     def finalAction(self):
         """
         After every player finishe their move,
@@ -68,6 +81,7 @@ class Dealer():
         while self.getValue() < 17:
             self.SetAsideACard()
 
+    @printStack
     def getValue(self):
         """
         return the value of the cards in dealer's hand
@@ -96,3 +110,16 @@ class Dealer():
         while result + 9 <= 21 and aceCount > 0:
             result += 9
             aceCount -= 1
+
+        self.__showCards()
+
+        return result
+
+
+
+    def __showCards(self):
+        """
+        print out all cards
+        """
+        for card in self.cardsInGame:
+            xPrint("cards in dealer:", card.getName())

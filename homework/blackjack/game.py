@@ -1,17 +1,18 @@
 from dealer import Dealer
+from player import Player
+from xprint import xPrint, printStack
 
-
-class Game(self):
+class Game():
     """
     Work as Mediator
     Implement the rule of the game
     """
-
+    @printStack
     def __init__(self, numberOfPlayers, numberOfDecks):
         """
         Initiate the Game class
         """
-        self.numberOfDecks = self.numberOfDecks
+        self.numberOfDecks = numberOfDecks
         self.numberOfPlayers = numberOfPlayers
 
         self.dealer = None
@@ -19,17 +20,20 @@ class Game(self):
 
         self.gameFinished = False
 
+        self.__game()
+
+    @printStack
     def __game(self):
         """
         Actual logic
         """
-        self.__createUsers()
         self.__initGame()
         while not self.gameFinished:
             self.__playARound()
             self.__judge()
         self.dealer.finalAction()
 
+    @printStack
     def __createUsers(self):
         """
         Create users
@@ -41,6 +45,7 @@ class Game(self):
                 )
             )
 
+    @printStack
     def __initGame(self):
         """
         Necessary preparation before game can start
@@ -54,6 +59,7 @@ class Game(self):
             player.addACard()
             player.addACard()
 
+    @printStack
     def __playARound(self):
         """
         Let each player run a round
@@ -63,6 +69,7 @@ class Game(self):
         for player in self.players:
             player.act()
 
+    @printStack
     def __judge(self):
         """
         After each round, 
@@ -70,6 +77,10 @@ class Game(self):
         And end the game if necessary
         """
         for player in self.players:
-            if not player.isPlayerFinished:
+            if player.isPlayerFinished() == False:
                 return
+        xPrint("all players are finished")
         self.gameFinished = True
+
+if __name__ == "__main__":
+    game = Game(1, 1)
