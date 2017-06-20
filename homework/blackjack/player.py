@@ -1,6 +1,7 @@
 from xprint import xPrint, printStack
 from card import Card
 
+
 class Player():
     """
     Player class who holds the cards after the deal
@@ -48,7 +49,7 @@ class Player():
         """
         Return the cards owned by the player
         """
-        return self.cards
+        return self.__getCards()
 
     @printStack
     def act(self):
@@ -56,9 +57,17 @@ class Player():
         Set the next action, probablly through console
         And then execute the result
         """
+        print("player %s's cards:" % self.playerName)
+        for card in self.__getCards():
+            print(card.getName())
         inputCommand = ""
+        allowedCommands = self.__getAllowedAction()
+        for allowedCommand in allowedCommands:
+            print("player %s is allowed to: %s" %
+                  (self.playerName, allowedCommand)
+                  )
         while inputCommand.upper() \
-                not in self.__getAllowedAction():
+                not in allowedCommands:
             try:
                 inputCommand = input("%s : " % self.playerName)
             except Exception as e:
@@ -156,6 +165,7 @@ class Player():
             result += 9
             aceCount -= 1
 
+        xPrint("Player %s's value:" % self.playerName, result)
         self.__showCards()
 
         return result
@@ -170,3 +180,14 @@ class Player():
                 "cards in player %s:" % self.playerName,
                 card.getName()
             )
+
+    @printStack
+    def finalAction(self):
+        """
+        final clean up action of a player
+        """
+
+        print("---------------")
+        print("player %s's cards:" % self.playerName)
+        for card in self.__getCards():
+            print(card.getName())

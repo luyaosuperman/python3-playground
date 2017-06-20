@@ -1,6 +1,6 @@
 
-debugPrint = True # only print if it is True
-stackPrint = True
+debugPrint = False # only print if it is True
+stackPrint = False
 def xPrint(*args):
 	"""
 	A print function that can be turned on/off
@@ -14,7 +14,7 @@ def printStack(method):
 	"""
 	def printed(*args, **kw):
 		if stackPrint:
-			xPrint("entering", method.__name__)
+			xPrint("****", method.__name__)
 		result = method(*args, **kw)
 		return result
 	return printed

@@ -62,7 +62,15 @@ class Dealer():
         """
         self.cardsInGame.append(self.cards.pop())
         self.__showCards()
-        
+
+    def revealACard(self):
+        """
+        Reveal the last card
+        """
+        print(
+            "One of the dealer's card is",
+            self.cardsInGame[-1].getName()
+        )
 
     @printStack
     def act(self):
@@ -80,6 +88,10 @@ class Dealer():
         """
         while self.getValue() < 17:
             self.SetAsideACard()
+        print("===============")
+        print("dealer's cards:")
+        for card in self.cardsInGame:
+            print(card.getName())
 
     @printStack
     def getValue(self):
@@ -111,11 +123,10 @@ class Dealer():
             result += 9
             aceCount -= 1
 
+        xPrint("Dealer's value:", result)
         self.__showCards()
 
         return result
-
-
 
     def __showCards(self):
         """

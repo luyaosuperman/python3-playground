@@ -31,7 +31,8 @@ class Game():
         while not self.gameFinished:
             self.__playARound()
             self.__judge()
-        self.dealer.finalAction()
+        self.__finalAction()
+
 
     @printStack
     def __createUsers(self):
@@ -54,6 +55,7 @@ class Game():
         self.__createUsers()
         self.dealer.SetAsideACard()
         self.dealer.SetAsideACard()
+        self.dealer.revealACard()
         for player in self.players:
             # deal two cards
             player.addACard()
@@ -81,6 +83,34 @@ class Game():
                 return
         xPrint("all players are finished")
         self.gameFinished = True
+
+    @printStack
+    def __finalAction(self):
+        """
+        Clean up actions before game finishes
+        """
+        self.dealer.finalAction()
+        for player in self.players:
+            player.finalAction()
+            if self.__isPlayerWin(player):
+                print("++ player %s win!" % player.playerName)
+            else:
+                print("-- player %s lose!" % player.playerName)
+
+    @printStack
+    def __isPlayerWin(self, player):
+        """
+        check if player wins or loses
+        """
+        if self.dealer.getValue() > 21:
+            return True
+
+        if player.getValue() > 21:
+            return False
+
+        if player.getValue() >= self.dealer.getValue():
+            return True
+
 
 if __name__ == "__main__":
     game = Game(1, 1)
