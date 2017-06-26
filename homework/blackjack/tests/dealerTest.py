@@ -1,7 +1,6 @@
 from dealer import Dealer
 from card import Card
 import unittest
-from unittest.mock import patch
 import xprint
 from xprint import xPrint
 
@@ -38,8 +37,7 @@ class DealerTest(unittest.TestCase):
         #xprint.debugPrint = True
         xPrint(cardsDict)
 
-    #@patch('dealer.Dealer._Dealer__shuffleCards', returnValue = 'None')
-    def testCreateADeckOfCard(self, *args, **keywargs):
+    def testCreateADeckOfCard(self):
         """
         test if the cards created by dealer is full
         """

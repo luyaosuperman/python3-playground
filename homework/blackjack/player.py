@@ -26,7 +26,7 @@ class Player():
 
         self.playerFinished = False
         self.stand = False
-        self.busted = False
+        #self.busted = False
         self.surrendered = False
         self.doubled = False
         self.splitted = False
@@ -101,7 +101,7 @@ class Player():
             allowedCommands.add("SPLIT")
 
         # DEBUG ONLY!
-        #allowedCommands.add("SPLIT")        
+        # allowedCommands.add("SPLIT")
         return allowedCommands
 
     @printStack
@@ -113,9 +113,11 @@ class Player():
         """
         Implement the action "hit"
         """
-        xPrint("player %s HIT!" % self.playerName)
+        print("player %s HIT!" % self.playerName)
         cards = self.__getCards()
         cards.append(self.funcGetACard())
+        # other actions will stop the play.
+        # only hit allows player to contine on with other options.
         self.__checkPlayerFinished()
 
     @printStack
@@ -123,7 +125,7 @@ class Player():
         """
         Implement the action "stand"
         """
-        xPrint("player %s STAND!" % self.playerName)
+        print("player %s STAND!" % self.playerName)
         self.stand = True
         self.playerFinished = True
 
@@ -132,7 +134,7 @@ class Player():
         """
         Implement the action "split"
         """
-        xPrint("player %s SPLIT!" % self.playerName)
+        print("player %s SPLIT!" % self.playerName)
         self.splitted = True
         self.cards2.append(self.cards1.pop())  # pop last item
         self.cards1.append(self.funcGetACard())
@@ -143,16 +145,17 @@ class Player():
         """
         Implement the action "double"
         """
-        xPrint("player %s DOUBLE!" % self.playerName)
+        print("player %s DOUBLE!" % self.playerName)
         cards = self.__getCards()
         cards.append(self.funcGetACard())
-        self.stand = True
+        self.doubled = True
+        self.playerFinished = True
 
     def __surrender(self):
         """
         Implement the action "surrender"
         """
-        xPrint("player %s SURRENDER!" % self.playerName)
+        print("player %s SURRENDER!" % self.playerName)
         self.surrendered = True
         self.playerFinished = True
 
