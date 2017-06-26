@@ -48,6 +48,7 @@ class UndirectionalGraph():
         nodesPrevious = [-1] * self.numberOfNodes
 
         nodesDistance[node] = 0
+        nodesPrevious[node] = node
 
         minpq = []
         for node in range(self.numberOfNodes):
@@ -67,6 +68,40 @@ class UndirectionalGraph():
                     heapq.heapify(minpq)
         xPrint(nodesDistance)
         xPrint(nodesPrevious)
+        return nodesPrevious, nodesDistance
+
+    def findHotEdge(self):
+        """
+        find hot path based on dijkstra
+        """
+        for src in range(self.numberOfNodes):
+            nodesPrevious, nodesDistance = self.dijkstra(src)
+            for dest in range(self.numberOfNodes):
+                #find all path from different nodes to source
+                if dest != src and nodesPrevious[dest] != -1:
+                    pre = nodesPrevious[dest]
+                    while pre != dest:
+                        self.logAnEdge(pre, dest)
+                        dest = pre
+                        pre = nodesPrevious[dest]
+        xPrint(self.edgesUsed)
+        return self.edgesUsed
+
+    def logAnEdge(self, node1, node2):
+        """
+        log an edge to the "frequency list"
+        """
+        if node1 < node2:
+            node = (node1, node2)
+        else:
+            node = (node2, node1)
+
+        if node not in self.edgesUsed:
+            self.edgesUsed[node] = 1
+        else:
+            self.edgesUsed[node] += 1
+
+
 
 if __name__ == "__main__":
     graph = UndirectionalGraph(3)
@@ -74,8 +109,10 @@ if __name__ == "__main__":
     graph.addEdge(0,2,4)
     graph.addEdge(1,2,2)
     graph.dijkstra(0)
+    graph.findHotEdge()
 
 
+    print("******************")
     graph = UndirectionalGraph(6)
     graph.addEdge(0,1,2)
     graph.addEdge(1,2,3)
@@ -85,6 +122,19 @@ if __name__ == "__main__":
     graph.addEdge(3,5,7)
     graph.addEdge(4,5,3)
     graph.dijkstra(0)
+    graph.findHotEdge()
+
+    print("******************")
+    graph = UndirectionalGraph(6)
+    graph.addEdge(0,1,2)
+    graph.addEdge(1,2,3)
+    graph.addEdge(0,2,1)
+    #graph.addEdge(2,3,5) Cut the graph
+    graph.addEdge(3,4,5)
+    graph.addEdge(3,5,7)
+    graph.addEdge(4,5,3)
+    graph.dijkstra(0)
+    graph.findHotEdge()
 
 
 
