@@ -17,6 +17,8 @@ class Dealer():
         initate the Dealer
         """
         self.numberOfDecks = numberOfDecks
+        if self.numberOfDecks <= 0:
+            raise ValueError("number of Decks is less than 0")
 
         self.cards = []
         self.usedCards = []
@@ -105,7 +107,7 @@ class Dealer():
         for card in cards:
             rank = card.getRank()
             if rank == 1:
-                aceCount += 2
+                aceCount += 1
             elif rank <= 10:
                 result += rank
             elif rank <= 13:
@@ -119,8 +121,8 @@ class Dealer():
 
         # One by one,
         # check if it is good to make ace 10 instaed of 1
-        while result + 9 <= 21 and aceCount > 0:
-            result += 9
+        while result + 10 <= 21 and aceCount > 0:
+            result += 10
             aceCount -= 1
 
         xPrint("Dealer's value:", result)

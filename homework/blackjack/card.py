@@ -31,8 +31,10 @@ class Card():
         Validate if the suit and rank makes sense
         Also, make sure no duplicate card will be issued
         """
-        assert(self.suit in Card.suits)
-        assert(self.rank >= 1 and self.rank <= 13)
+        if self.suit not in Card.suits:
+            raise ValueError("the suit provided is not valid")
+        if not (self.rank >= 1 and self.rank <= 13):
+            raise ValueError("the rank provided is not valid")
         # If, else, raise
 
         """suitRank = (self.suit, self.rank)
@@ -59,4 +61,4 @@ class Card():
         Get the proper name of the card
         e.g. Clubs Ace, or something else
         """
-        return ("%s %s" % (self.suit, self.rank))
+        return ("%s-%s" % (self.suit, self.rank))

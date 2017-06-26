@@ -10,6 +10,9 @@ class Player():
     ACTIONS = {
         "HIT",
         "STAND",
+        "DOUBLE"
+        "SPLIT",
+        "SURRENDER"
     }
 
     def __init__(self, playerName, funcGetACard):
@@ -24,14 +27,16 @@ class Player():
         self.playerFinished = False
         self.stand = False
         self.busted = False
-        self.splitted = None
-        self.splitHand = 1
-        # After the split, whether the player will choose
-        # hand 1 or hand 2
+        self.surrendered = False
+        self.doubled = False
+        self.splitted = False
 
         self.actionMap = {
             "HIT": self.__hit,
             "STAND": self.__stand,
+            "DOUBLE": self.__double,
+            "SPLIT": self.__split,
+            "SURRENDER": self.__surrender,
         }
 
     @printStack
@@ -69,7 +74,10 @@ class Player():
         while inputCommand.upper() \
                 not in allowedCommands:
             try:
-                inputCommand = input("%s : " % self.playerName)
+                #inputCommand = input("%s : " % self.playerName)
+                inputCommand = self.__getUserInput(
+                    "%s : " % self.playerName
+                )
             except Exception as e:
                 print(str(e))
         func = self.actionMap[inputCommand.upper()]
@@ -83,10 +91,22 @@ class Player():
         """
 
         # Without implementing chips, evey action is allowed
-        return {
+        allowedCommands = {
             "HIT",
             "STAND",
+            "DOUBLE",
+            "SURRENDER",
         }
+        if self.cards1[0].getRank() == self.cards1[1].getRank():
+            allowedCommands.add("SPLIT")
+
+        # DEBUG ONLY!
+        #allowedCommands.add("SPLIT")        
+        return allowedCommands
+
+    @printStack
+    def __getUserInput(self, prompt):
+        return input(prompt)
 
     @printStack
     def __hit(self):
@@ -95,8 +115,7 @@ class Player():
         """
         xPrint("player %s HIT!" % self.playerName)
         cards = self.__getCards()
-        card = self.funcGetACard()
-        cards.append(card)
+        cards.append(self.funcGetACard())
         self.__checkPlayerFinished()
 
     @printStack
@@ -105,15 +124,44 @@ class Player():
         Implement the action "stand"
         """
         xPrint("player %s STAND!" % self.playerName)
-        self.stand = 1
+        self.stand = True
         self.playerFinished = True
 
     @printStack
-    def __getCards(self):
+    def __split(self):
+        """
+        Implement the action "split"
+        """
+        xPrint("player %s SPLIT!" % self.playerName)
+        self.splitted = True
+        self.cards2.append(self.cards1.pop())  # pop last item
+        self.cards1.append(self.funcGetACard())
+        self.cards2.append(self.funcGetACard())
+        self.playerFinished = True
+
+    def __double(self):
+        """
+        Implement the action "double"
+        """
+        xPrint("player %s DOUBLE!" % self.playerName)
+        cards = self.__getCards()
+        cards.append(self.funcGetACard())
+        self.stand = True
+
+    def __surrender(self):
+        """
+        Implement the action "surrender"
+        """
+        xPrint("player %s SURRENDER!" % self.playerName)
+        self.surrendered = True
+        self.playerFinished = True
+
+    @printStack
+    def __getCards(self, hands=1):
         """
         return the correct stack before/after split
         """
-        if self.splitHand == 1:
+        if hands == 1:
             cards = self.cards1
         else:
             cards = self.cards2
@@ -125,7 +173,7 @@ class Player():
         Check if the player can continue on
         """
         if self.getValue() >= 21:
-            xPrint("player %s busted!" % self.playerName)
+            print("player %s busted!" % self.playerName)
             self.playerFinished = True
 
     @printStack
@@ -133,21 +181,34 @@ class Player():
         """
         Return if the player is stand
         """
-        return self.isPlayerFinished
+        return self.playerFinished
 
     @printStack
-    def getValue(self):
+    def isPlayerSplitted(self):
+        """
+        Return if the player is splitted
+        """
+        return self.splitted
+
+    def isPlayerSurrendered(self):
+        """
+        Return if the player surrenedered
+        """
+        return self.surrendered
+
+    @printStack
+    def getValue(self, hands=1):
         """
         get the value of cards in player's hand
         """
 
-        cards = self.__getCards()
+        cards = self.__getCards(hands)
         aceCount = 0
         result = 0
         for card in cards:
             rank = card.getRank()
             if rank == 1:
-                aceCount += 2
+                aceCount += 1
             elif rank <= 10:
                 result += rank
             elif rank <= 13:
@@ -161,8 +222,8 @@ class Player():
 
         # One by one,
         # check if it is good to make ace 10 instaed of 1
-        while result + 9 <= 21 and aceCount > 0:
-            result += 9
+        while result + 10 <= 21 and aceCount > 0:
+            result += 10
             aceCount -= 1
 
         xPrint("Player %s's value:" % self.playerName, result)
@@ -170,6 +231,7 @@ class Player():
 
         return result
 
+    @printStack
     def __showCards(self):
         """
         print out all cards
@@ -182,12 +244,25 @@ class Player():
             )
 
     @printStack
+    def getPlayerName(self):
+        """
+        return playerName
+        """
+        return self.playerName
+
+    @printStack
     def finalAction(self):
         """
         final clean up action of a player
         """
 
         print("---------------")
-        print("player %s's cards:" % self.playerName)
+        print("player %s's cards in hand1:" % self.playerName)
         for card in self.__getCards():
             print(card.getName())
+
+        # if splitted, print another hand of cards
+        if self.splitted == True:
+            print("player %s's cards in hand2:" % self.playerName)
+            for card in self.cards2:
+                print(card.getName())
