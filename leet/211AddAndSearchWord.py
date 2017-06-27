@@ -1,5 +1,10 @@
 import unittest
 
+class TriNode():
+    def __init__(self, value):
+        self.value = value
+        self.nodes = []
+
 class WordDictionary(object):
 
     def __init__(self):
