@@ -3,12 +3,31 @@ from player import Player
 from xprint import xPrint, printStack
 import xprint
 
+""" 
+@startuml
 
+class Game
+Game -- Player : > have multiple
+Game -- Dealer : > have 1
+@enduml
+
+@startuml
+Game -> Dealer: Create
+Game -> Player: Create
+Game -> Dealer: SetAsideACard()
+Game -> Player: addACard()
+loop until all players return true with isPlayerFinished()
+Game -> Player: act()
+end
+@enduml
+
+"""
 class Game():
     """
     Work as Mediator
     Implement the rule of the game
     """
+
     @printStack
     def __init__(self, numberOfPlayers, numberOfDecks):
         """
