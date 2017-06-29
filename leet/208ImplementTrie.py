@@ -1,8 +1,35 @@
+import unittest
+
+debugPrint = True  # only print if it is True
+stackPrint = True
+
+
+def xPrint(*args):
+    """
+    A print function that can be turned on/off
+    """
+    if debugPrint:
+        print(*args)
+
+
+def printStack(method):
+    """
+    print the name of the method
+    """
+    def printed(*args, **kw):
+        if stackPrint:
+            xPrint("****", method.__name__, args, kw)
+        result = method(*args, **kw)
+        if stackPrint:
+            xPrint("++++",method.__name__, args, kw,"Returns", result)
+        return result
+    return printed
 
 class TrieNode():
 
+    @printStack
     def __init__(self, value, isRoot=False):
-        self.nextTrieNode = dict()
+        self.nextTrieNodes = dict()
         assert(len(value) >= 1)
         char = value[0]
         if isRoot == False:
@@ -17,25 +44,62 @@ class TrieNode():
         else:
             nextChar = char
 
-        self.nextTrieNode[nextChar] = TrieNode(value)
+        self.nextTrieNodes[nextChar] = TrieNode(value)
 
-    def addWord(self, value):
+    @printStack
+    def addWord(self, value, isRoot = False):
         assert(len(value) >= 1)
         char = value[0]
-        assert(char == self.value)
-        if len(value) == 1:
-            self.count += 1
-            return
+        if isRoot == True:
+            nextChar = char
         else:
-            value = value[1:]
-            nextChar = value[0]
+            assert(char == self.char)
+            if len(value) == 1:
+                self.count += 1
+                return
+            else:
+                value = value[1:]
+                nextChar = value[0]
 
-        if nextChar in self.nextTrieNode:
-            self.nextTrieNode[nextChar].addWord(value)
+        if nextChar in self.nextTrieNodes:
+            self.nextTrieNodes[nextChar].addWord(value)
         else:
-            self.nextTrieNode[nextChar] = TrieNode(value)
+            self.nextTrieNodes[nextChar] = TrieNode(value)
 
+    @printStack
     def getWord(self, value, isRoot=False):
+        assert(len(value) >= 1)
+        char = value[0]
+        if isRoot == True:
+            if char in self.nextTrieNodes:
+                return self.nextTrieNodes[char].getWord(value)
+            else:
+                return False
+        else:
+            if len(value) == 1:
+                if char == self.char and self.count >= 1:
+                    return True
+                else:
+                    return False
+            else:
+                value = value[1:]
+                nextChar = value[0]
+                if nextChar not in self.nextTrieNodes:
+                    return False
+                else:
+                    return self.nextTrieNodes[nextChar].getWord(value)
+
+    def printStack(self, isRoot = False, level = 0):
+        if isRoot == True:
+            xPrint("root")
+            xPrint(self.nextTrieNodes)
+        else:
+            xPrint(level, self.char, self.count)
+            xPrint(self.nextTrieNodes)
+        for nextChar in self.nextTrieNodes:
+            self.nextTrieNodes[nextChar].printStack(level = level + 1)
+
+
 
 
 class Trie(object):
@@ -44,20 +108,33 @@ class Trie(object):
         """
         Initialize your data structure here.
         """
+        self.root = None
 
+    @printStack
     def insert(self, word):
         """
         Inserts a word into the trie.
         :type word: str
         :rtype: void
         """
+        if self.root == None:
+            self.root = TrieNode(word, isRoot = True)
+        else:
+            self.root.addWord(word, isRoot = True)
 
+        self.root.printStack(isRoot = True)
+
+    @printStack
     def search(self, word):
         """
         Returns if the word is in the trie.
         :type word: str
         :rtype: bool
         """
+        if self.root == None:
+            return False
+        else:
+            return self.root.getWord(word, isRoot = True)
 
     def startsWith(self, prefix):
         """
@@ -72,3 +149,19 @@ class Trie(object):
 # obj.insert(word)
 # param_2 = obj.search(word)
 # param_3 = obj.startsWith(prefix)
+class UnitTest(unittest.TestCase):
+
+    def test1(self):
+        trie = Trie()
+        self.assertEqual(trie.search("abc"), False)
+        words = ["abc", "abde", "abfg"]
+        for word in words:
+            trie.insert(word)
+
+        #trie.search("def")
+
+        for word in words:
+            self.assertEqual(trie.search(word), True)
+
+if __name__ == '__main__':
+    unittest.main()
