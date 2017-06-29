@@ -1,5 +1,4 @@
 import unittest
-import data211
 
 debugPrint = False  # only print if it is True
 stackPrint = True
@@ -10,7 +9,6 @@ def xPrint(*args):
     A print function that can be turned on/off
     """
     if debugPrint:
-        pass
         print(*args)
 
 
@@ -36,10 +34,9 @@ class TrieNode():
         self.char = char
         self.count = count
         self.isRoot = isRoot
-        self.lenSet = set()
 
 
-class WordDictionary(object):
+class Trie(object):
 
     def __init__(self):
         """
@@ -48,9 +45,9 @@ class WordDictionary(object):
         self.root = TrieNode(isRoot=True)
 
     @printStack
-    def addWord(self, word):
+    def insert(self, word):
         """
-        Adds a word into the data structure.
+        Inserts a word into the trie.
         :type word: str
         :rtype: void
         """
@@ -70,8 +67,6 @@ class WordDictionary(object):
                     return None
                 else:
                     nextChar = chars[0]
-            #add after possible pop
-            currentNode.lenSet.add(len(chars))
 
             if nextChar not in currentNode.nextTrieNodes:
                 currentNode.nextTrieNodes[nextChar] = TrieNode(nextChar)
@@ -80,7 +75,7 @@ class WordDictionary(object):
             currentNode = currentNode.nextTrieNodes[nextChar]
 
     @printStack
-    def __search(self, word):
+    def __search(self, word, partial=False):
         chars = list(word)
         currentNode = self.root
 
@@ -99,8 +94,9 @@ class WordDictionary(object):
                 xPrint("currentNode.count", currentNode.count)
                 if len(chars) == 0:
 
+                    xPrint("partial", partial)
                     xPrint(currentNode.nextTrieNodes.keys())
-                    if currentNode.count > 0:
+                    if currentNode.count > 0 or partial:
                         return True
                     else:
                         return False
@@ -117,171 +113,49 @@ class WordDictionary(object):
                 return False
 
     @printStack
-    def __bfs(self, word):
-        chars = list(word)
-        currentNode = self.root
-        qChars = []
-        qNodes = []
-        qChars.append(chars)
-        qNodes.append(self.root)
-
-        while len(qChars) > 0:
-            assert(len(qChars) == len(qNodes))
-            xPrint("***********")
-            xPrint("qChars", qChars)
-            xPrint("qNodes", qNodes)
-            chars = qChars.pop(0)
-            currentNode = qNodes.pop(0)
-            xPrint("chars", chars)
-            xPrint("currentNode", currentNode)
-
-            if currentNode.isRoot == False:
-                xPrint("None root")
-                chars.pop(0)
-            else:
-                xPrint("root")
-
-            if len(chars) == 0:
-                xPrint("len(chars) == 0")
-                xPrint("currentNode.count", currentNode.count)
-                if currentNode.count > 0:
-                    return True
-                else:
-                    # return False
-                    continue
-            else:
-                char = chars[0]
-                xPrint("char", char)
-
-            xPrint("chars after pop: ", chars)
-            xPrint(currentNode.nextTrieNodes.keys())
-            if char != '.':
-                if char in currentNode.nextTrieNodes:
-                    xPrint("char in currentNode.nextTrieNodes")
-                    qChars.append(chars[:])
-                    qNodes.append(currentNode.nextTrieNodes[char])
-                else:
-                    continue
-            elif char == '.':
-                for c in currentNode.nextTrieNodes:
-                    qChars.append(chars[:])
-                    qNodes.append(currentNode.nextTrieNodes[c])
-            else:
-                assert(False)
-
-            # none root
-
-            # last node
-        return False
-
-    @printStack
-    def __bfs2(self, word):
-        chars = list(word)
-        currentNode = self.root
-        qChars = []
-        qNodes = []
-        # qChars.append(chars)
-        qChars.append(0)
-        qNodes.append(self.root)
-
-        while len(qChars) > 0:
-            assert(len(qChars) == len(qNodes))
-            xPrint("***********")
-            xPrint("qChars", qChars)
-            xPrint("qNodes", qNodes)
-            #chars = qChars.pop(0)
-            cursor = qChars.pop(0)
-            currentNode = qNodes.pop(0)
-            xPrint("chars", chars)
-            xPrint("currentNode", currentNode)
-
-
-            if currentNode.isRoot == False:
-                xPrint("None root")
-                # chars.pop(0)
-                cursor += 1
-            else:
-                xPrint("root")
-
-            if len(set(chars[cursor:])) == 1 and chars[cursor] == '.':
-                return len(chars) - cursor in currentNode.lenSet
-
-
-            # if len(chars) == 0:
-            if len(chars) - cursor == 0:
-                xPrint("len(chars) == 0")
-                xPrint("currentNode.count", currentNode.count)
-                if currentNode.count > 0:
-                    return True
-                else:
-                    # return False
-                    continue
-            else:
-                #char = chars[0]
-                char = chars[cursor]
-                xPrint("char", char)
-
-            #xPrint("chars after pop: ", chars)
-            xPrint(currentNode.nextTrieNodes.keys())
-            if char != '.':
-                if char in currentNode.nextTrieNodes:
-                    xPrint("char in currentNode.nextTrieNodes")
-                    # qChars.append(chars[:])
-                    qChars.append(cursor)
-                    qNodes.append(currentNode.nextTrieNodes[char])
-                else:
-                    continue
-            elif char == '.':
-                for c in currentNode.nextTrieNodes:
-                    # qChars.append(chars[:])
-                    qChars.append(cursor)
-                    qNodes.append(currentNode.nextTrieNodes[c])
-            else:
-                assert(False)
-
-            # none root
-
-            # last node
-        return False
-
-    @printStack
     def search(self, word):
         """
-        Returns if the word is in the data structure. A word could contain the dot character '.' to represent any one letter.
+        Returns if the word is in the trie.
         :type word: str
         :rtype: bool
         """
-        return self.__bfs2(word)
+        return self.__search(word, partial=False)
+
+    @printStack
+    def startsWith(self, prefix):
+        """
+        Returns if there is any word in the trie that starts with the given prefix.
+        :type prefix: str
+        :rtype: bool
+        """
+        return self.__search(prefix, partial=True)
 
 
-# Your WordDictionary object will be instantiated and called as such:
-# obj = WordDictionary()
-# obj.addWord(word)
+# Your Trie object will be instantiated and called as such:
+# obj = Trie()
+# obj.insert(word)
 # param_2 = obj.search(word)
-
-
+# param_3 = obj.startsWith(prefix)
 class UnitTest(unittest.TestCase):
 
     #@unittest.skip
     @printStack
     def test1(self):
-        trie = WordDictionary()
+        trie = Trie()
         self.assertEqual(trie.search("abc"), False)
-        words = [
-            "g",
-            "abc",
-            "abde",
-            "abfg",
-            "zxvf",
-            "dsfcxsrwecsdf"
-        ]
+        words = ["g", "abc", "abde", "abfg", "zxvf", "dsfcxsrwecsdf"]
         for word in words:
-            trie.addWord(word)
+            trie.insert(word)
 
         # trie.search("def")
 
         for word in words:
             self.assertEqual(trie.search(word), True)
+
+        self.assertEqual(trie.startsWith("ab"), True)
+        self.assertEqual(trie.startsWith("z"), True)
+        self.assertEqual(trie.startsWith("d"), True)
+        self.assertEqual(trie.startsWith("e"), False)
 
     #@unittest.skip
     @printStack
@@ -537,19 +411,17 @@ class UnitTest(unittest.TestCase):
         assert(len(actions) == len(data))
         assert(len(actions) == len(expected))
 
-        trie = WordDictionary()
+        trie = Trie()
         for action, dat, expect in zip(actions, data, expected):
             if action == "Trie":
                 pass
             if action == "insert":
-                trie.addWord(dat[0])
+                trie.insert(dat[0])
             if action == "search":
                 self.assertEqual(trie.search(dat[0]), expect)
             if action == "startsWith":
-                pass
-                #self.assertEqual(trie.startsWith(dat[0]), expect)
+                self.assertEqual(trie.startsWith(dat[0]), expect)
 
-    #@unittest.skip
     @printStack
     def test3(self):
         actions = [
@@ -601,78 +473,17 @@ class UnitTest(unittest.TestCase):
         assert(len(actions) == len(data))
         assert(len(actions) == len(expected))
 
-        trie = WordDictionary()
+        trie = Trie()
         for action, dat, expect in zip(actions, data, expected):
             if action == "Trie":
                 pass
             if action == "insert":
-                trie.addWord(dat[0])
+                trie.insert(dat[0])
             if action == "search":
                 self.assertEqual(trie.search(dat[0]), expect)
             if action == "startsWith":
-                pass
-                #self.assertEqual(trie.startsWith(dat[0]), expect)
+                self.assertEqual(trie.startsWith(dat[0]), expect)
 
-    #@unittest.skip
-    @printStack
-    def test4(self):
-        trie = WordDictionary()
-        trie.addWord("bad")
-        trie.addWord("dad")
-        trie.addWord("mad")
-
-        self.assertEqual(trie.search("pad"), False)
-        self.assertEqual(trie.search("bad"), True)
-        self.assertEqual(trie.search(".ad"), True)
-        self.assertEqual(trie.search("b.."), True)
-
-    @printStack
-    def test5(self):
-        trie = WordDictionary()
-        for action, dat in zip(
-            data211.actions,
-            data211.data
-        ):
-            if action == "WordDictionary":
-                pass
-            if action == "addWord":
-                trie.addWord(dat[0])
-            if action == "search":
-                trie.search(dat[0])
-
-
-    @printStack
-    def test6(self):
-        trie = WordDictionary()
-        for action, dat, expect in zip(
-            ["WordDictionary","addWord","search"],
-            [[],["a"],["."]],
-            [None,None,True]
-
-        ):
-            if action == "WordDictionary":
-                pass
-            if action == "addWord":
-                trie.addWord(dat[0])
-            if action == "search":
-                self.assertEqual(trie.search(dat[0]), expect)
-
-
-    @printStack
-    def test7(self):
-        trie = WordDictionary()
-        for action, dat, expect in zip(
-            ["WordDictionary","addWord","addWord","addWord","addWord","addWord","addWord","addWord","addWord","search","search","search","search","search","search","search","search","search","search"],
-            [[],["ran"],["rune"],["runner"],["runs"],["add"],["adds"],["adder"],["addee"],["r.n"],["ru.n.e"],["add"],["add."],["adde."],[".an."],["...s"],["....e."],["......."],["..n.r"]],
-            [None,None,None,None,None,None,None,None,None,True,False,True,True,True,False,True,True,False,False]
-
-        ):
-            if action == "WordDictionary":
-                pass
-            if action == "addWord":
-                trie.addWord(dat[0])
-            if action == "search":
-                self.assertEqual(trie.search(dat[0]), expect)
 
 if __name__ == '__main__':
     unittest.main()

@@ -1,6 +1,6 @@
 import unittest
 
-debugPrint = True  # only print if it is True
+debugPrint = False  # only print if it is True
 stackPrint = True
 
 
@@ -21,9 +21,10 @@ def printStack(method):
             xPrint("****", method.__name__, args, kw)
         result = method(*args, **kw)
         if stackPrint:
-            xPrint("++++",method.__name__, args, kw,"Returns", result)
+            xPrint("++++", method.__name__, args, kw, "Returns", result)
         return result
     return printed
+
 
 class TrieNode():
 
@@ -47,7 +48,7 @@ class TrieNode():
         self.nextTrieNodes[nextChar] = TrieNode(value)
 
     @printStack
-    def addWord(self, value, isRoot = False):
+    def addWord(self, value, isRoot=False):
         assert(len(value) >= 1)
         char = value[0]
         if isRoot == True:
@@ -67,17 +68,17 @@ class TrieNode():
             self.nextTrieNodes[nextChar] = TrieNode(value)
 
     @printStack
-    def getWord(self, value, isRoot=False):
+    def getWord(self, value, partial=False, isRoot=False):
         assert(len(value) >= 1)
         char = value[0]
         if isRoot == True:
             if char in self.nextTrieNodes:
-                return self.nextTrieNodes[char].getWord(value)
+                return self.nextTrieNodes[char].getWord(value, partial)
             else:
                 return False
         else:
             if len(value) == 1:
-                if char == self.char and self.count >= 1:
+                if char == self.char and (partial == True or self.count >= 1):
                     return True
                 else:
                     return False
@@ -87,9 +88,9 @@ class TrieNode():
                 if nextChar not in self.nextTrieNodes:
                     return False
                 else:
-                    return self.nextTrieNodes[nextChar].getWord(value)
+                    return self.nextTrieNodes[nextChar].getWord(value, partial)
 
-    def printStack(self, isRoot = False, level = 0):
+    def printStack(self, isRoot=False, level=0):
         if isRoot == True:
             xPrint("root")
             xPrint(self.nextTrieNodes)
@@ -97,9 +98,7 @@ class TrieNode():
             xPrint(level, self.char, self.count)
             xPrint(self.nextTrieNodes)
         for nextChar in self.nextTrieNodes:
-            self.nextTrieNodes[nextChar].printStack(level = level + 1)
-
-
+            self.nextTrieNodes[nextChar].printStack(level=level + 1)
 
 
 class Trie(object):
@@ -118,11 +117,11 @@ class Trie(object):
         :rtype: void
         """
         if self.root == None:
-            self.root = TrieNode(word, isRoot = True)
+            self.root = TrieNode(word, isRoot=True)
         else:
-            self.root.addWord(word, isRoot = True)
+            self.root.addWord(word, isRoot=True)
 
-        self.root.printStack(isRoot = True)
+        self.root.printStack(isRoot=True)
 
     @printStack
     def search(self, word):
@@ -134,7 +133,7 @@ class Trie(object):
         if self.root == None:
             return False
         else:
-            return self.root.getWord(word, isRoot = True)
+            return self.root.getWord(word, isRoot=True)
 
     def startsWith(self, prefix):
         """
@@ -142,6 +141,10 @@ class Trie(object):
         :type prefix: str
         :rtype: bool
         """
+        if self.root == None:
+            return False
+        else:
+            return self.root.getWord(prefix, partial = True, isRoot=True)
 
 
 # Your Trie object will be instantiated and called as such:
@@ -154,14 +157,19 @@ class UnitTest(unittest.TestCase):
     def test1(self):
         trie = Trie()
         self.assertEqual(trie.search("abc"), False)
-        words = ["abc", "abde", "abfg"]
+        words = ["abc", "abde", "abfg","zxvf","dsfcxsrwecsdf"]
         for word in words:
             trie.insert(word)
 
-        #trie.search("def")
+        # trie.search("def")
 
         for word in words:
             self.assertEqual(trie.search(word), True)
+
+        self.assertEqual(trie.startsWith("ab"), True)
+        self.assertEqual(trie.startsWith("z"), True)
+        self.assertEqual(trie.startsWith("d"), True)
+        self.assertEqual(trie.startsWith("e"), False)
 
 if __name__ == '__main__':
     unittest.main()
