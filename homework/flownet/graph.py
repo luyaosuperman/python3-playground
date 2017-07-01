@@ -14,14 +14,29 @@ class UndirectionalGraph():
         # assume nodes start from 0, stop at numberOfNodes - 1
         self.numberOfNodes = numberOfNodes 
         
-        # record the edge and its weight
-        # every edge is recorded twice
-        # {node1: {node2:1, node3:2}, ...}
+        """record the edge and its weight
+        
+        every edge is recorded twice
+        {
+            node1: {
+                node2: 1, 
+                node3: 2
+            },
+            ...
+            node3: {
+                node1: 2
+            }
+        }
+        """
         self.edges = dict() 
 
-        # record the frequency of edge being used
-        # only record once per edge
-        # {(smallerNode, largerNode):count, ...}
+        """record the frequency of edge being used
+        only record once per edge
+        {
+            (smallerNode, largerNode): count, 
+            ...
+        }
+        """
         self.edgesUsed = dict() 
 
     def addEdge(self, node1, node2, weight):
@@ -43,7 +58,6 @@ class UndirectionalGraph():
         """
         Calculate the shortest spannning tree from a node
         """
-        #nodesVisisted = [False] * self.numberOfNodes
         nodesDistance = [math.inf] * self.numberOfNodes
         nodesPrevious = [-1] * self.numberOfNodes
 
@@ -135,15 +149,3 @@ if __name__ == "__main__":
     graph.addEdge(4,5,3)
     graph.dijkstra(0)
     graph.findHotEdge()
-
-
-
-
-
-        
-
-
-
-
-
-

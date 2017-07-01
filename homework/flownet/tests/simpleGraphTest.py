@@ -24,4 +24,16 @@ class SimpleGraphTest(unittest.TestCase):
 
     def testHotLink(self):
         hotEdges = self.testGraph.findHotEdge()
-        self.assertEqual(hotEdges[(2, 3)], 14)
+        edgeCountExpects = {
+            (0, 1): 2,
+            (1, 2): 6,
+            (2, 3): 14,
+            (4, 5): 2,
+            (3, 4): 6,
+            (0, 2): 6,
+            (3, 5): 6
+        }
+
+        for edge in edgeCountExpects:
+            expect = edgeCountExpects[edge]
+            self.assertEqual(hotEdges[edge], expect)
