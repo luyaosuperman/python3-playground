@@ -1,7 +1,7 @@
 from xprint import xPrint, printStack
 
 
-class Card():
+class Card(object):
     """
     Base class of cards
     """
@@ -13,9 +13,6 @@ class Card():
         "SPADES",
     }
 
-    # __usedCombination = set()
-    # It should contain the set of cards which is already shuffled,
-    # in form of tuple: {(Cards.CLUBS, 1), (Cards.SPADES, 2)}
 
     def __init__(self, suit, rank):
         """
@@ -33,16 +30,9 @@ class Card():
         """
         if self.suit not in Card.suits:
             raise ValueError("the suit provided is not valid")
-        if not (self.rank >= 1 and self.rank <= 13):
+        if  self.rank < 1 or self.rank > 13:
             raise ValueError("the rank provided is not valid")
-        # If, else, raise
 
-        """suitRank = (self.suit, self.rank)
-        if suitRank in Card.__usedCombination:
-            raise RuntimeError(
-                "duplicate cards %s %s" % (self.suit, self.rank))
-        else:
-            Card.__usedCombination.add(suitRank)"""
 
     def getSuit(self):
         """

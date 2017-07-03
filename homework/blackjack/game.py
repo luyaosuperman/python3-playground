@@ -5,15 +5,19 @@ import xprint
 
 """ 
 @startuml
-
 class Game
-Game -- Player : > have multiple
-Game -- Dealer : > have 1
+Game --> Player
+Game --> Dealer
+Player ..> Dealer
+Player --> Cards
+Dealer --> Cards
 @enduml
+"""
 
+"""
 @startuml
 Game -> Dealer: Create
-Game -> Player: Create
+Game -> Player: Create multiple
 Game -> Dealer: SetAsideACard()
 Game -> Player: addACard()
 loop until all players return true with isPlayerFinished()
@@ -22,7 +26,21 @@ end
 @enduml
 
 """
-class Game():
+
+"""
+@startuml
+[*] -> Initialized : __initGame()
+Initialized -> StartGame
+StartGame -> DealerActed 
+DealerActed -> PlayerActed
+PlayerActed -> GameFished : __judge()
+PlayerActed -> StartGame
+
+@enduml
+"""
+
+
+class Game(object):
     """
     Work as Mediator
     Implement the rule of the game
@@ -41,6 +59,7 @@ class Game():
 
         self.gameFinished = False
 
+        self.__initGame()
         self.__game()
 
     @printStack
@@ -48,7 +67,6 @@ class Game():
         """
         Actual logic
         """
-        self.__initGame()
         while not self.gameFinished:
             self.__playARound()
             self.__judge()
@@ -62,7 +80,7 @@ class Game():
         for i in range(self.numberOfPlayers):
             self.players.append(
                 Player(
-                    "Player_" + str(i), self.dealer.dealACard
+                    "Player_" + str(i), self.dealer.dealCard
                 )
             )
 
@@ -87,7 +105,6 @@ class Game():
         Let each player run a round
 
         """
-        self.dealer.act()
         for player in self.players:
             player.act()
 
@@ -100,7 +117,8 @@ class Game():
         """
         for player in self.players:
             if player.isPlayerFinished() == False:
-                return
+                # short circuit the logic
+                return None
         xPrint("all players are finished")
         self.gameFinished = True
 
@@ -113,11 +131,6 @@ class Game():
         for player in self.players:
             player.finalAction()
             self.__isPlayerWin(player)
-
-            '''if self.__isPlayerWin(player):
-                print("++ player %s win!" % player.playerName)
-            else:
-                print("-- player %s lose!" % player.playerName)'''
 
     @printStack
     def __isPlayerWin(self, player):

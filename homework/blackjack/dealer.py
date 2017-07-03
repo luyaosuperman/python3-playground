@@ -3,7 +3,7 @@ from xprint import xPrint, printStack
 import random
 
 
-class Dealer():
+class Dealer(object):
     """
     Manager class, responsible for
     (1) Create and manage users
@@ -51,7 +51,7 @@ class Dealer():
             self.cards[i], self.cards[j] = self.cards[j], self.cards[i]
 
     @printStack
-    def dealACard(self):
+    def dealCard(self):
         """
         Deal a car to a user
         """
@@ -73,14 +73,6 @@ class Dealer():
             "One of the dealer's card is",
             self.cardsInGame[-1].getName()
         )
-
-    @printStack
-    def act(self):
-        """
-        Necessary dealer action in a round
-        seems to be None?
-        """
-        pass
 
     @printStack
     def finalAction(self):

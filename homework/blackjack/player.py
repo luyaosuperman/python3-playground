@@ -2,7 +2,7 @@ from xprint import xPrint, printStack
 from card import Card
 
 
-class Player():
+class Player(object):
     """
     Player class who holds the cards after the deal
     """
@@ -26,7 +26,6 @@ class Player():
 
         self.playerFinished = False
         self.stand = False
-        #self.busted = False
         self.surrendered = False
         self.doubled = False
         self.splitted = False
@@ -74,7 +73,6 @@ class Player():
         while inputCommand.upper() \
                 not in allowedCommands:
             try:
-                #inputCommand = input("%s : " % self.playerName)
                 inputCommand = self.__getUserInput(
                     "%s : " % self.playerName
                 )
