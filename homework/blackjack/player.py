@@ -16,11 +16,11 @@ class Player(object):
     }
 
     STATE = {
-    "NA",
-    "PENDING",
-    "WIN",
-    "LOSE",
-    "SURRENDER"
+        "NA",
+        "PENDING",
+        "WIN",
+        "LOSE",
+        "SURRENDER"
     }
 
     def __init__(self, playerName, dealer):
@@ -291,8 +291,7 @@ class Player(object):
             for card in self.cards2:
                 print(card.getName())
 
-
-    def setState(self, state, hand = 1):
+    def setState(self, state, hand=1):
         """
         this is the func which Game class will use to set
         the state of player, after comparing with Dealer
@@ -300,7 +299,7 @@ class Player(object):
         if state not in Player.STATE:
             raise RuntimeError("invalid state: %s" % state)
 
-        if hand ==1:
+        if hand == 1:
             self.state1 = state
         elif hand == 2:
             self.state2 = state

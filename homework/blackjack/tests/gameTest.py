@@ -19,7 +19,6 @@ class GameTest(unittest.TestCase):
         self.game._Game__createUsers()
         self.assertEqual(self.game.gameFinished, False)
 
-
     def test__judge_GameFinish(self, *args, **keywargs):
         """
         Test if __judge works correctly
@@ -43,12 +42,12 @@ class GameTest(unittest.TestCase):
         Create a scenario that player will win over dealer
         And check if the game recongnized it correctly.
         """
-        self.game.dealer.cardsInGame.append(Card("CLUBS",10))
-        self.game.dealer.cardsInGame.append(Card("CLUBS",9))
+        self.game.dealer.cardsInGame.append(Card("CLUBS", 10))
+        self.game.dealer.cardsInGame.append(Card("CLUBS", 9))
 
         for player in self.game.players:
-            player.cards1.append(Card("CLUBS",10))
-            player.cards1.append(Card("CLUBS",10))
+            player.cards1.append(Card("CLUBS", 10))
+            player.cards1.append(Card("CLUBS", 10))
             self.game._Game__isPlayerWin(player)
 
             print(player.state1)
@@ -59,14 +58,13 @@ class GameTest(unittest.TestCase):
         Create a scenario that player will win over dealer
         And check if the game recongnized it correctly.
         """
-        self.game.dealer.cardsInGame.append(Card("CLUBS",10))
-        self.game.dealer.cardsInGame.append(Card("CLUBS",10))
+        self.game.dealer.cardsInGame.append(Card("CLUBS", 10))
+        self.game.dealer.cardsInGame.append(Card("CLUBS", 10))
 
         for player in self.game.players:
-            player.cards1.append(Card("CLUBS",9))
-            player.cards1.append(Card("CLUBS",10))
+            player.cards1.append(Card("CLUBS", 9))
+            player.cards1.append(Card("CLUBS", 10))
             self.game._Game__isPlayerWin(player)
 
             print(player.state1)
             self.assertEqual(player.state1, "LOSE")
-

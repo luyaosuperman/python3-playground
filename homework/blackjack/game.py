@@ -139,12 +139,12 @@ class Game(object):
         """
         if player.isPlayerSurrendered():
             print("Player %s lost. Surrenderred!" % player.getPlayerName())
-            player.setState("LOSE",1)
+            player.setState("LOSE", 1)
             return False
 
         if self.dealer.getValue() > 21:
             print("Player %s win. Dealer busted!" % player.getPlayerName())
-            player.setState("WIN",1)
+            player.setState("WIN", 1)
             return True
 
         if player.getValue() > 21:
@@ -153,7 +153,7 @@ class Game(object):
             player.setState("LOSE", 1)
         elif player.getValue() >= self.dealer.getValue():
             print("Player %s win on hand 1." % player.getPlayerName())
-            player.setState("WIN",1)
+            player.setState("WIN", 1)
         else:
             print("Player %s lose on hand 1." % player.getPlayerName())
             player.setState("LOSE", 1)

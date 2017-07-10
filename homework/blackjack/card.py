@@ -13,7 +13,6 @@ class Card(object):
         "SPADES",
     }
 
-
     def __init__(self, suit, rank):
         """
         Set suit and rank for the card
@@ -30,9 +29,8 @@ class Card(object):
         """
         if self.suit not in Card.suits:
             raise ValueError("the suit provided is not valid")
-        if  self.rank < 1 or self.rank > 13:
+        if self.rank < 1 or self.rank > 13:
             raise ValueError("the rank provided is not valid")
-
 
     def getSuit(self):
         """
