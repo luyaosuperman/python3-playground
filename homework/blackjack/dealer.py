@@ -33,8 +33,8 @@ class Dealer(object):
         """
         Create a deck of cards
         """
+        # Create multiple decks of cards
         for deck in range(self.numberOfDecks):
-            # Create multiple decks of cards
             for suit in Card.suits:
                 for rank in range(1, 13 + 1):
                     self.cards.append(Card(suit, rank))
@@ -58,14 +58,14 @@ class Dealer(object):
         return self.cards.pop()
 
     @printStack
-    def SetAsideACard(self):
+    def SetAsideCard(self):
         """
         Set aside a card for dealer itself
         """
         self.cardsInGame.append(self.cards.pop())
         self.__showCards()
 
-    def revealACard(self):
+    def revealCard(self):
         """
         Reveal the last card
         """
@@ -81,7 +81,7 @@ class Dealer(object):
         dealer need to do something.
         """
         while self.getValue() < 17:
-            self.SetAsideACard()
+            self.SetAsideCard()
         print("===============")
         print("dealer's cards:")
         for card in self.cardsInGame:

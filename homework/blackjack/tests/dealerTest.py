@@ -59,7 +59,7 @@ class DealerTest(unittest.TestCase):
         while total number of cards should remain the same
         """
         dealer = Dealer(1)
-        dealer.SetAsideACard()
+        dealer.SetAsideCard()
         self.assertEqual(len(dealer.cards), 51)
         self.assertEqual(len(dealer.cardsInGame), 1)
         self.__validateDeckCompleteness(dealer.cards + dealer.cardsInGame)

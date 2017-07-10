@@ -80,7 +80,7 @@ class Game(object):
         for i in range(self.numberOfPlayers):
             self.players.append(
                 Player(
-                    "Player_" + str(i), self.dealer.dealCard
+                    "Player_" + str(i), self.dealer
                 )
             )
 
@@ -91,13 +91,13 @@ class Game(object):
         """
         self.dealer = Dealer(self.numberOfDecks)
         self.__createUsers()
-        self.dealer.SetAsideACard()
-        self.dealer.SetAsideACard()
-        self.dealer.revealACard()
+        self.dealer.SetAsideCard()
+        self.dealer.SetAsideCard()
+        self.dealer.revealCard()
         for player in self.players:
             # deal two cards
-            player.addACard()
-            player.addACard()
+            player.addCard()
+            player.addCard()
 
     @printStack
     def __playARound(self):
@@ -139,19 +139,24 @@ class Game(object):
         """
         if player.isPlayerSurrendered():
             print("Player %s lost. Surrenderred!" % player.getPlayerName())
+            player.setState("LOSE",1)
             return False
 
         if self.dealer.getValue() > 21:
             print("Player %s win. Dealer busted!" % player.getPlayerName())
+            player.setState("WIN",1)
             return True
 
         if player.getValue() > 21:
             print("Player %s lost on hand 1. Player Busted!" %
                   player.getPlayerName())
+            player.setState("LOSE", 1)
         elif player.getValue() >= self.dealer.getValue():
             print("Player %s win on hand 1." % player.getPlayerName())
+            player.setState("WIN",1)
         else:
             print("Player %s lose on hand 1." % player.getPlayerName())
+            player.setState("LOSE", 1)
 
         if player.isPlayerSplitted():
             print(
@@ -162,10 +167,13 @@ class Game(object):
             if player.getValue(2) > 21:
                 print("Player %s lost on hand 2. Player Busted!" %
                       player.getPlayerName())
+                player.setState("LOSE", 2)
             elif player.getValue(2) >= self.dealer.getValue():
                 print("Player %s win on hand 2." % player.getPlayerName())
+                player.setState("WIN", 2)
             else:
                 print("Player %s lose on hand 2." % player.getPlayerName())
+                player.setState("LOSE", 2)
 
 
 if __name__ == "__main__":

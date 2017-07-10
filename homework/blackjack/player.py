@@ -15,14 +15,25 @@ class Player(object):
         "SURRENDER"
     }
 
-    def __init__(self, playerName, funcGetACard):
+    STATE = {
+    "NA",
+    "PENDING",
+    "WIN",
+    "LOSE",
+    "SURRENDER"
+    }
+
+    def __init__(self, playerName, dealer):
         """
         set the name of player, for identification purpose
         """
         self.playerName = playerName
-        self.funcGetACard = funcGetACard  # Dealer.dealACard()
+        self.dealer = dealer  # Dealer.dealACard()
         self.cards1 = []  # used by default
         self.cards2 = []  # becoume useful after split
+
+        self.state1 = "PENDING"
+        self.state2 = "NA"
 
         self.playerFinished = False
         self.stand = False
@@ -39,12 +50,12 @@ class Player(object):
         }
 
     @printStack
-    def addACard(self):
+    def addCard(self):
         """
         Add a card to the possession of the user
         """
         cards = self.__getCards()
-        cards.append(self.funcGetACard())
+        cards.append(self.dealer.dealCard())
         self.__checkPlayerFinished()
         self.__showCards()
 
@@ -62,24 +73,28 @@ class Player(object):
         And then execute the result
         """
         print("player %s's cards:" % self.playerName)
-        for card in self.__getCards():
-            print(card.getName())
-        inputCommand = ""
-        allowedCommands = self.__getAllowedAction()
-        for allowedCommand in allowedCommands:
-            print("player %s is allowed to: %s" %
-                  (self.playerName, allowedCommand)
-                  )
-        while inputCommand.upper() \
-                not in allowedCommands:
-            try:
-                inputCommand = self.__getUserInput(
-                    "%s : " % self.playerName
-                )
-            except Exception as e:
-                print(str(e))
-        func = self.actionMap[inputCommand.upper()]
-        func()
+        self.__checkPlayerFinished()
+        if not self.playerFinished:
+            for card in self.__getCards():
+                print(card.getName())
+            inputCommand = ""
+            allowedCommands = self.__getAllowedAction()
+            for allowedCommand in allowedCommands:
+                print("player %s is allowed to: %s" %
+                      (self.playerName, allowedCommand)
+                      )
+            while inputCommand.upper() \
+                    not in allowedCommands:
+                try:
+                    inputCommand = self.__getUserInput(
+                        "%s : " % self.playerName
+                    )
+                except Exception as e:
+                    print(str(e))
+            func = self.actionMap[inputCommand.upper()]
+            func()
+        else:
+            print("player %s finished!" % self.playerName)
 
     @printStack
     def __getAllowedAction(self):
@@ -113,7 +128,7 @@ class Player(object):
         """
         print("player %s HIT!" % self.playerName)
         cards = self.__getCards()
-        cards.append(self.funcGetACard())
+        cards.append(self.dealer.dealCard())
         # other actions will stop the play.
         # only hit allows player to contine on with other options.
         self.__checkPlayerFinished()
@@ -135,8 +150,9 @@ class Player(object):
         print("player %s SPLIT!" % self.playerName)
         self.splitted = True
         self.cards2.append(self.cards1.pop())  # pop last item
-        self.cards1.append(self.funcGetACard())
-        self.cards2.append(self.funcGetACard())
+        self.cards1.append(self.dealer.dealCard())
+        self.cards2.append(self.dealer.dealCard())
+        self.state2 = "PENDING"
         self.playerFinished = True
 
     def __double(self):
@@ -145,7 +161,7 @@ class Player(object):
         """
         print("player %s DOUBLE!" % self.playerName)
         cards = self.__getCards()
-        cards.append(self.funcGetACard())
+        cards.append(self.dealer.dealCard())
         self.doubled = True
         self.playerFinished = True
 
@@ -155,6 +171,7 @@ class Player(object):
         """
         print("player %s SURRENDER!" % self.playerName)
         self.surrendered = True
+        self.state1 = "LOSE"
         self.playerFinished = True
 
     @printStack
@@ -173,9 +190,15 @@ class Player(object):
         """
         Check if the player can continue on
         """
-        if self.getValue() >= 21:
+        if self.getValue(1) >= 21:
             print("player %s busted!" % self.playerName)
             self.playerFinished = True
+            self.state1 = "lose"
+
+        if self.getValue(2) >= 21:
+            print("player %s busted!" % self.playerName)
+            self.playerFinished = True
+            self.state2 = "lose"
 
     @printStack
     def isPlayerFinished(self):
@@ -267,3 +290,19 @@ class Player(object):
             print("player %s's cards in hand2:" % self.playerName)
             for card in self.cards2:
                 print(card.getName())
+
+
+    def setState(self, state, hand = 1):
+        """
+        this is the func which Game class will use to set
+        the state of player, after comparing with Dealer
+        """
+        if state not in Player.STATE:
+            raise RuntimeError("invalid state: %s" % state)
+
+        if hand ==1:
+            self.state1 = state
+        elif hand == 2:
+            self.state2 = state
+        else:
+            raise ValueError("invalid hand: %s" % hand)

@@ -20,7 +20,7 @@ class PlayerTest(unittest.TestCase):
         """
         Test if __init__ is correct
         """
-        player = Player("Player_0", self.getAnCard)
+        player = Player("Player_0", self)
         self.assertEqual(len(player.cards1), 0)
         self.assertEqual(player.playerFinished, False)
         self.assertEqual(player.stand, False)
@@ -63,7 +63,7 @@ class PlayerTest(unittest.TestCase):
             ]
             self.assertEqual(player.getValue(), result)
 
-    def getAnCard(self):
+    def dealCard(self):
         """
         The function to be passed to the class Player
         It should provide a card on request
@@ -75,9 +75,9 @@ class PlayerTest(unittest.TestCase):
         """
         Make sure hit is working as expected
         """
-        player = Player("Player_0", self.getAnCard)
-        player.addACard()  # 2
-        player.addACard()  # 3
+        player = Player("Player_0", self)
+        player.addCard()  # 2
+        player.addCard()  # 3
         player.act()
         self.assertEqual(len(player.cards1), 3)
         self.assertEqual(player.cards1[2].getRank(), 4)
@@ -92,7 +92,7 @@ class PlayerTest(unittest.TestCase):
         """
         Test if player can detect busted player after hit
         """
-        player = Player("Player_0", self.getAnCard)
+        player = Player("Player_0", self)
         player.cards1 = [Card("CLUBS", 10), Card("CLUBS", 11)]
         player.act()
         self.assertEqual(len(player.cards1), 3)
@@ -108,9 +108,9 @@ class PlayerTest(unittest.TestCase):
         """
         Make sure hit is working as expected
         """
-        player = Player("Player_0", self.getAnCard)
-        player.addACard()  # 2
-        player.addACard()  # 3
+        player = Player("Player_0", self)
+        player.addCard()  # 2
+        player.addCard()  # 3
         player.act()
         self.assertEqual(len(player.cards1), 2)
         self.assertEqual(player.cards1[1].getRank(), 3)
@@ -135,9 +135,9 @@ class PlayerTest(unittest.TestCase):
         """
         Make sure split is working as expected
         """
-        player = Player("Player_0", self.getAnCard)
-        player.addACard()  # 2
-        player.addACard()  # 3
+        player = Player("Player_0", self)
+        player.addCard()  # 2
+        player.addCard()  # 3
         player.act()
         self.assertEqual(len(player.cards1), 2)
         self.assertEqual(len(player.cards1), 2)
@@ -154,9 +154,9 @@ class PlayerTest(unittest.TestCase):
         """
         Make sure double is working as expected
         """
-        player = Player("Player_0", self.getAnCard)
-        player.addACard()  # 2
-        player.addACard()  # 3
+        player = Player("Player_0", self)
+        player.addCard()  # 2
+        player.addCard()  # 3
         player.act()
         self.assertEqual(len(player.cards1), 3)
         self.assertEqual(player.cards1[2].getRank(), 4)
@@ -171,9 +171,9 @@ class PlayerTest(unittest.TestCase):
         """
         Make sure surrender is working as expected
         """
-        player = Player("Player_0", self.getAnCard)
-        player.addACard()  # 2
-        player.addACard()  # 3
+        player = Player("Player_0", self)
+        player.addCard()  # 2
+        player.addCard()  # 3
         player.act()
         self.assertEqual(len(player.cards1), 2)
         self.assertEqual(player.cards1[1].getRank(), 3)
