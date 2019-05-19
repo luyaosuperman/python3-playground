@@ -91,7 +91,7 @@ class Player():
 #####################################################################
 
 
-class Referee():
+class Dealer():
     """
     Manager class, responsible for
     (1) Create and manage users
@@ -102,7 +102,7 @@ class Referee():
 
     def __init__(self, numberOfPlayers):
         """
-        initate the Referee
+        initate the Dealer
         """
         assert(
             numberOfPlayers > 0
@@ -179,8 +179,8 @@ class Referee():
         self.__validateCardsIntegrity(cards=cards)
 
 if __name__ == "__main__":
-    referee = Referee(4)
-    referee.shuffleCards()
-    referee.dealCards()
-    for card in referee.cards:
+    dealer = Dealer(4)
+    dealer.shuffleCards()
+    dealer.dealCards()
+    for card in dealer.cards:
         print(card.getName())
